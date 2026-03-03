@@ -25,8 +25,8 @@ transform = transforms.Compose(
 """
 transforms.normalize (mean, std, inplace=False). It is used to
 scale each feature value among dataset to a z-score. This normalization
-is used in image tensor since mean, std are triple tuple vectors
-whose corresponds to (C,H,W) where C: number of channels, H: image height in a pixel
+is used in image tensor. Since each picture in a dataset format is
+represented by three number (C,H,W) where C: number of channels, H: image height in a pixel
 and WL image width in a pixel. E.g.
 x = torch.empty(3, 32, 32).uniform_(0, 1)
 x is an image tensor whose dimension is 3 * 32*32, i.e. X is an image of
@@ -34,6 +34,10 @@ x is an image tensor whose dimension is 3 * 32*32, i.e. X is an image of
 x[0] show the intensity of color 0 in a pixel 32*32 image.
 x[1] show the intensity of color 1 in the same pixel 32*32 image.
 x[2] show the intensity of color 2 in the same pixel 32*32 image.
+Therefore, the first 0.5 in mean input (0.5,0.5,0.5) and the first 0.5 in the std input of transforms.Normalize is as follows:
+scale all intensity value of color 0 in each pixel in 32*32 image by (intensity of color 0 - 0.5) / 0.5
+We can deduce the second pair of 0.5 mean and 0.5 std by (intensity of color 1 - 0.5) / 0.5 and
+the third pair of 0.5 mean and 0.5 std by (intensity of color 2 - 0.5) / 0.5.
 """
 
 train_dataset = torchvision.datasets.CIFAR10( root='./data', train = True, download = True, transform = transform)
