@@ -1,11 +1,11 @@
 """
 reference:https://github.com/Exorust/TorchLeet/blob/main/torch/easy/cnn/CNN.ipynb
 You are tasked with implementing a Convolutional Neural Network (CNN)
-for image classification on the CIFAR-10 dataset using PyTorch.
-The model should contain convolutional layers for feature extraction,
-pooling layers for downsampling, and fully connected layers for classification.
-Your goal is to complete the CNN model by defining the necessary layers and
-implementing the forward pass
+for image classification on the CIFAR-10 dataset using PyTorch. The CIFAR10 dataset is 
+a collection of images that are "plane", "car", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck".
+The image set are difficult to classify. For example, dog and cat are similar.
+The following is a toy model of cnn+fully connected neural network for me to learn the architecture. To achieve 
+a higher accuracy to classify the images, a more layers and nodes are needed. Please check cnn.advanced.py
 """
 
 import torch
