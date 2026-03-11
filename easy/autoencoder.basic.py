@@ -91,7 +91,7 @@ model = Autoencoder()
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr = 0.001, weight_decay = 1e-05)
 
-epochs = 5
+epochs = 3
 for epoch in range(epochs):
     for images, _ in train_loader:
         decoded_images = model(images)
@@ -122,7 +122,7 @@ model.train()
 Reference: https://stackoverflow.com/questions/60018578/what-does-model-eval-do-in-pytorch
 """
 # Detect anomalies using reconstruction error
-threshold = 0.1 
+threshold = 0.003
 model.eval()
 anomalies = []
 normal = []
@@ -130,26 +130,23 @@ with torch.no_grad():
     for images, _ in test_loader:
         reconstructed_images = model(images)
         loss = criterion(reconstructed_images, images)
-        print("loss.item() > threshold ",loss.item() > threshold)
+
         if loss.item() > threshold:
             anomalies.append(images)
         else:
             normal.append(images)
 
-# # Visualize normal
-# if normal:
-#     # Select the first anomaly image in the first batch having anomaly images.
-#
-#     # remove the channel dimension
-#     for image in normal[0]:
-#         normal_image = image.squeeze()
-#
-#         print(f"Unanomaly image shape: {normal_image.shape}")
-#         # Convert tensor to NumPy array for visualization
-#         plt.imshow(normal_image.cpu().numpy(), cmap="gray")
-#         plt.show()
-# else:
-#     print("No unanomalies detected.")
+# Visualize normal
+if normal:
+    normal_image = normal[0][0].squeeze()
+
+    print(f"Normal image shape: {normal_image.shape}")
+    # Convert tensor to NumPy array for visualization
+    plt.imshow(normal_image.cpu().numpy(), cmap="gray")
+    plt.show()
+
+else:
+    print("No normal detected.")
 
 # Visualize anomalies
 if anomalies:
