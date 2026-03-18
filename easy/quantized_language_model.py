@@ -26,6 +26,7 @@ Evaluate the quantized model's performance compared to the original model.
 More reference about LTSM
 https://d2l.ai/chapter_recurrent-modern/lstm.html
 https://docs.pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html
+
 word_embedding reference:
 https://docs.pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
 https://www.geeksforgeeks.org/nlp/word-embeddings-in-nlp/
@@ -34,6 +35,60 @@ potential homework: Augmenting the LSTM part-of-speech tagger with character-lev
 https://docs.pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html
 """
 
+"""
+More about LSTM memory unit architecture
+LSTM memory cell unit:
+
+  cell state
+    C_{t-1}     --->    C_{t-1}*forget_gate -------->   C_{t-1} * forget_gate + input_gate * input_node  --------+-----------------> C_{t}
+                            / \                                             / \                                  |
+                             |                                               |                                   |
+                             |                                               |                                   |
+                             |                                               |                                   |
+                ------>  forget_gate                     |-------> input_gate * input_node                       |
+                |           / \                          |                  / \                                  |
+ hidden state   |            |                           |                   |                                  \ /
+    h_{t-1}     ------------ | ------------------->  input_gate              |                              weight_hidden_state ----> h_{t}
+                |            |                          / \                  |                                  / \
+                |            |                           |                   |                                   |
+                ------------ | ------------------------- | ----------> input_node                                |
+                |            |                           |                 / \                                   |
+                |            |                           |                  |                                    |
+                ------------ | ------------------------- | ---------------- | ----------------------------> output_gate
+                             |                           |                  |                                   / \
+                             |                           |                  |                                    |
+                             |                           |                  |                                    |
+                             ----------------------------+--------------------------------------------------------
+                                                         |
+                                                   Input X_{t}
+
+forget_gate   =    sigmoid( W_fh * h_{t-1} + W_fx * X_{t} + b_f )
+input_gate    =    sigmoid( W_ih * h_{t-1} + W_ix * X_{t} + b_i )
+output_gate   =    sigmoid( W_oh * h_{t-1} + W_ox * X_{t} + b_o )
+input_node    =    tanh( W_nh * h_{t-1} + W_nx * X_{t} + b_n )
+
+C_{t-1}*forget_gate : it is a elementary-wise multiplication among forget gate vector and C_{t-1} vector.
+                      Each component of a vector outputted by forget gate is a probability vector. The
+                      multiplication operation here means how much information should be kept for each element in C_{t-1}.
+                      It serves a long - short memory of C_{t-1}. If the forget gate vector are all zeros, that means
+                      we can forget the C_{t-1} effect on C_{t}. If the forget gate vector are all 1, that means
+                      C_{t-1} is memorized and affect fully on C_{t}
+
+input_gate * input_node : it is a elementary-wise multiplication among input gate vector and input node vector.
+                          Input node vector is not a probability vector while the input gate vector is a probability vector.
+                          The multiplication operation here means how much information should be kept for each element in input
+                          node vector, i.e how much information of h_{t-1} and X_{t-1} should be kept.
+
+C_{t} = C_{t-1} * forget_gate + input_gate * input_node :
+        The formula above combines the previous weighted C_{t-1} and information from h_{t-1} and X_{t-1} to forms a new C_{t}
+
+weight_hidden_state = output_gate * tanh( C_{t} ). It is a elementary-wise multiplication among ouput gate vector and C_t vector.
+                      The output gate vector is a probability vector. The multiplication operation here means how much information
+                      should be kept for each element in C_t as a hidden state h_t .
+
+num_layers in pytorch nn.LSTM() is the number of the above LSTM memory unit which are connected in a row.
+
+""""
 
 import torch
 import torch.nn as nn
