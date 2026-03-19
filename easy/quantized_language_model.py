@@ -33,6 +33,7 @@ https://www.geeksforgeeks.org/nlp/word-embeddings-in-nlp/
 
 potential homework: Augmenting the LSTM part-of-speech tagger with character-level features on
 https://docs.pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html
+https://github.com/udacity/deep-learning-v2-pytorch/blob/master/word2vec-embeddings/Skip_Grams_Exercise.ipynb
 """
 
 """
@@ -88,7 +89,7 @@ weight_hidden_state = output_gate * tanh( C_{t} ). It is a elementary-wise multi
 
 num_layers in pytorch nn.LSTM() is the number of the above LSTM memory unit which are connected in a row.
 
-""""
+"""
 
 import torch
 import torch.nn as nn
@@ -149,9 +150,13 @@ vocab_size = 50
 seq_length = 10
 batch_size = 32
 
-X_train = torch.randint(0, vocab_size, (batch_size, seq_length)) #Random integer sequence input (mimics a sqeuenc of words)
+#Random integer sequence input (mimics a sqeuenc of words)
+#X_train is a shape of batch_size x seq_length matrix whose each entry is an integer between 0 and (vocab_size - 1)
+#y_train is a shape of batch_size and hence it is a vector of integers between 0 and (vocab_size - 1)
+X_train = torch.randint(0, vocab_size, (batch_size, seq_length))
 y_train = torch.randint(0, vocab_size, (batch_size,)) #Random target words
-
+print(X_train.shape)
+print(y_train.shape)
 # Initialize the model, loss function and optimizers
 embed_size = 64
 hidden_size = 128
@@ -161,10 +166,11 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr = 0.001)
 
 epochs =  5
+print(f"Loss function cannot decrease signigicantly coz this toy of LSTM use random data which does not have temporal dependencies.")
 for epoch in range(epochs):
     model.train()
     optimizer.zero_grad()
-    output = model(X_train)
+    output = model(X_train) #Each row is acted as a sequential input X_0,...X_{seq_length -1 } in LSTM.
     loss = criterion(output, y_train)
 
     loss.backward()
