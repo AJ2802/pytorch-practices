@@ -30,7 +30,7 @@ represented by three number (C,H,W) where C: number of channels, H: image height
 and WL image width in a pixel. E.g.
 x = torch.empty(3, 32, 32).uniform_(0, 1)
 x is an image tensor whose dimension is 3 * 32*32, i.e. X is an image of
-# 224*224 pixels having 3 colors. In other words, X has color 0, 1, 2 corresponding to red, green and blue.
+# 32*32 pixels having 3 colors. In other words, X has color 0, 1, 2 corresponding to red, green and blue.
 x[0] show the intensity of color 0 in a pixel 32*32 image.
 x[1] show the intensity of color 1 in the same pixel 32*32 image.
 x[2] show the intensity of color 2 in the same pixel 32*32 image.
